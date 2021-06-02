@@ -1,10 +1,30 @@
 import React, { useContext, useState } from "react";
+import TodoApi from "../apis/TodoApi";
 import { TodoContext } from "../context/TodoContext";
 
 const UpdateTodo = ({ todo }) => {
   const { id, description } = todo;
   const { todos, setTodos } = useContext(TodoContext);
   const [todoInput, setTodoInput] = useState(description);
+
+  const handleSubmit = async () => {
+    if (todoInput == "") return;
+    try {
+      const response = await TodoApi.put(`/${id}`, {
+        description: todoInput,
+      });
+      setTodos(
+        todos.map((todo) => {
+          if (todo.id === id) {
+            todo.description = todoInput;
+          }
+          return todo;
+        })
+      );
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <>
@@ -23,6 +43,9 @@ const UpdateTodo = ({ todo }) => {
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
+        onClick={() => {
+          setTodoInput(description);
+        }}
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
@@ -35,6 +58,9 @@ const UpdateTodo = ({ todo }) => {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => {
+                  setTodoInput(description);
+                }}
               ></button>
             </div>
             <div className="modal-body">
@@ -50,10 +76,18 @@ const UpdateTodo = ({ todo }) => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                onClick={() => {
+                  setTodoInput(description);
+                }}
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={handleSubmit}
+              >
                 Edit
               </button>
             </div>

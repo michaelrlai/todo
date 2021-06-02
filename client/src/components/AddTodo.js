@@ -7,6 +7,7 @@ const AddTodo = () => {
   const [todoInput, setTodoInput] = useState("");
 
   const handleSubmit = async () => {
+    if (todoInput == "") return;
     try {
       const response = await TodoApi.post("/", {
         description: todoInput,
