@@ -31,7 +31,7 @@ const AddTodo = () => {
           onChange={(e) => setTodoInput(e.target.value)}
         ></input>
         <button
-          className="btn btn-primary"
+          className="btn btn-success"
           type="button"
           onClick={handleSubmit}
         >

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import TodoApi from "../apis/TodoApi";
 import { TodoContext } from "../context/TodoContext";
+import UpdateTodo from "./UpdateTodo";
 
 const TodoList = (props) => {
   const { todos, setTodos } = useContext(TodoContext);
@@ -16,6 +17,19 @@ const TodoList = (props) => {
     };
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await TodoApi.delete(`/${id}`);
+      setTodos(
+        todos.filter((todo) => {
+          return todo.id !== id;
+        })
+      );
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <table className="table mt-3 align-middle">
@@ -41,10 +55,15 @@ const TodoList = (props) => {
                   <span className="ms-3">{todo.description}</span>
                 </td>
                 <td className="text-center">
-                  <button className="btn btn-warning">Edit</button>
+                  <UpdateTodo todo={todo} />
                 </td>
                 <td className="text-center">
-                  <button className="btn btn-danger">Delete</button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleDelete(todo.id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             );
